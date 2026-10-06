@@ -530,8 +530,8 @@ be approximate.
 ## Architecture
 
 ```text
-src/alerts_bi_runs/          analysis, run API, CLI, scheduling, persistence, migrations
-src/src/db/ledger.py        minimal shim for immutable historical migration imports
+src/          analysis, run API, CLI, scheduling, persistence, migrations
+compat/src/db/ledger.py        minimal shim for immutable historical migration imports
 packages/shared/            alerts-bi-shared: SQL config, pure domain/UI building blocks
 packages/operations/        alerts-bi-operations: registry, publication, decisions, reporting
 config/teams.json           runtime registry values (set an explicit path outside this repo)
@@ -583,3 +583,9 @@ and a BI-side migration-invariant alert identity.
 
 The first post-MVP step, the frontend, is delivered as the read-only review portal (design
 section 7.10). The next is deterministic historical backfill oldest-first with no LLM calls.
+
+
+Application code lives directly in `src/`. Local tests import `src`, while setuptools
+maps that directory to the service's distinct installed Python package. The console
+command and Docker listener are unchanged. `uv sync --frozen` installs the editable
+mapping; `uv build` produces the independently installable wheel and source archive.

@@ -8,6 +8,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.10.8 /uv /usr/local/bin/uv
 COPY pyproject.toml uv.lock README.md ./
 COPY packages/ packages/
 COPY src/ src/
+COPY compat/ compat/
 COPY config/teams.json config/
 COPY alembic.ini ./
 RUN uv sync --frozen --no-dev --no-editable \

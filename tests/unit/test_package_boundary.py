@@ -3,10 +3,9 @@
 from pathlib import Path
 
 import pytest
-
-from alerts_bi_runs.cli import main
-from alerts_bi_runs.db.migrate import heads
-from alerts_bi_runs.llm.prompt import build_prompt
+from src.cli import main
+from src.db.migrate import heads
+from src.llm.prompt import build_prompt
 
 
 def test_default_prompt_and_revision_graph_work_outside_the_checkout(

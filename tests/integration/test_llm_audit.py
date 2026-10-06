@@ -11,13 +11,13 @@ from alerts_bi_operations.review.publication import publish_run
 from alerts_bi_shared.db.connection import Database, connect
 from alerts_bi_shared.hashing import sha256_text
 from sqlalchemy.exc import DBAPIError
+from src.config import load_config
+from src.db.llm_audit import SqlLlmJournal
+from src.db.migrate import reset_test_database
+from src.db.repositories import PersistencePayload, RunIsPublished, persist_run
+from src.llm.assess import AssessmentResult, assess_alerts
+from src.llm.fake import FakeLlmClient, ScriptedResult
 
-from alerts_bi_runs.config import load_config
-from alerts_bi_runs.db.llm_audit import SqlLlmJournal
-from alerts_bi_runs.db.migrate import reset_test_database
-from alerts_bi_runs.db.repositories import PersistencePayload, RunIsPublished, persist_run
-from alerts_bi_runs.llm.assess import AssessmentResult, assess_alerts
-from alerts_bi_runs.llm.fake import FakeLlmClient, ScriptedResult
 from tests.helpers.rows import v1_row
 from tests.helpers.sql import sample_run
 

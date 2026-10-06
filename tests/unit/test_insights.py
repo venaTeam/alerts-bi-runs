@@ -521,10 +521,8 @@ def test_unseen_lists_one_schema_only() -> None:
 
 def test_concentration_exactly_at_80_percent() -> None:
     alerts = tuple(alert(key_field=str(i), row_count=c) for i, c in enumerate((40, 40, 10, 10)))
-    alerts_bi_runs = inputs(
-        alerts=alerts, schemas={"v1": totals("v1", events=100), "v2": totals("v2")}
-    )
-    f = next(x for x in key_findings(alerts_bi_runs) if x.kind == "concentration")
+    src = inputs(alerts=alerts, schemas={"v1": totals("v1", events=100), "v2": totals("v2")})
+    f = next(x for x in key_findings(src) if x.kind == "concentration")
     assert f.title == "2 of 4 v1 alerts make 80% of the events"
 
 

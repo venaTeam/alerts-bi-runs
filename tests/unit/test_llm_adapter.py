@@ -7,10 +7,9 @@ from typing import Any
 import httpx
 import pytest
 from openai import OpenAI
-
-from alerts_bi_runs.config.llm import LlmConfig
-from alerts_bi_runs.llm.client import LlmTransportError
-from alerts_bi_runs.llm.openai_client import OpenAiLlmClient
+from src.config.llm import LlmConfig
+from src.llm.client import LlmTransportError
+from src.llm.openai_client import OpenAiLlmClient
 
 CONFIG = LlmConfig(True, "https://model.invalid/v1", "test", "deployment", 1000, 200, False)
 

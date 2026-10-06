@@ -13,16 +13,15 @@ from pathlib import Path
 
 import pytest
 from alerts_bi_shared.db.connection import connect
-
-from alerts_bi_runs.config import load_config
-from alerts_bi_runs.db.ledger import (
+from src.config import load_config
+from src.db.ledger import (
     MIGRATIONS_DIR,
     MigrationDrift,
     load_migrations,
     read_ledger,
     verify_ledger,
 )
-from alerts_bi_runs.db.migrate import (
+from src.db.migrate import (
     applied_migrations,
     current_revision,
     heads,

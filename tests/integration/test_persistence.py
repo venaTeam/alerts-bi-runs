@@ -9,10 +9,9 @@ from typing import Any
 import pytest
 from alerts_bi_shared.db.connection import Database, connect, quote_identifier
 from sqlalchemy.exc import DatabaseError
-
-from alerts_bi_runs.config import load_config
-from alerts_bi_runs.db.migrate import reset_test_database
-from alerts_bi_runs.db.repositories import (
+from src.config import load_config
+from src.db.migrate import reset_test_database
+from src.db.repositories import (
     PersistencePayload,
     find_panel_parse,
     find_verdicts,
@@ -25,6 +24,7 @@ from alerts_bi_runs.db.repositories import (
     persist_run,
     verdict_key,
 )
+
 from tests.helpers.sql import (
     sample_daily,
     sample_finding,

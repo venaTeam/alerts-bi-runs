@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import pytest
+from src.domain.normalize import AlertRecord
+from src.llm.assess import assess_alerts
+from src.llm.fake import FakeLlmClient, scripted_verdicts
+from src.llm.grouping import build_batches
+from src.llm.response import LlmResponseError, validate_response
 
-from alerts_bi_runs.domain.normalize import AlertRecord
-from alerts_bi_runs.llm.assess import assess_alerts
-from alerts_bi_runs.llm.fake import FakeLlmClient, scripted_verdicts
-from alerts_bi_runs.llm.grouping import build_batches
-from alerts_bi_runs.llm.response import LlmResponseError, validate_response
 from tests.helpers.rows import v1_row, v2_row
 from tests.unit.test_llm import MODEL_VERSION, NOW, PROMPT_VERSION, RUN_ID, good_verdict, response
 

@@ -4,13 +4,13 @@ from datetime import datetime, timedelta
 
 import pytest
 from alerts_bi_shared.window import build_run_window
-
-from alerts_bi_runs.domain.metrics import (
+from src.domain.metrics import (
     DailyVolume,
     compute_daily_volume,
     ratio_or_none,
     rollup_volume,
 )
+
 from tests.helpers.rows import v1_row, v2_row
 
 

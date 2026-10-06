@@ -9,10 +9,10 @@ from typing import Any, cast
 
 import pytest
 from alerts_bi_shared.window import build_run_window
+from src.domain.normalize import AlertRecord
+from src.es.client import ElasticsearchError, EsClient
+from src.es.reader import scan_schema
 
-from alerts_bi_runs.domain.normalize import AlertRecord
-from alerts_bi_runs.es.client import ElasticsearchError, EsClient
-from alerts_bi_runs.es.reader import scan_schema
 from tests.helpers.rows import v1_row
 
 WINDOW = build_run_window(datetime(2026, 8, 25, 18, tzinfo=UTC))

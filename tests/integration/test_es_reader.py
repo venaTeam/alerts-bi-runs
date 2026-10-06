@@ -10,10 +10,9 @@ from datetime import datetime
 import pytest
 from alerts_bi_operations.registry import load_registry, select_team
 from alerts_bi_shared.window import build_run_window
-
-from alerts_bi_runs.config import load_config
-from alerts_bi_runs.es.client import EsClient
-from alerts_bi_runs.es.reader import V1_INDEX, build_query, read_schema, read_team_alerts
+from src.config import load_config
+from src.es.client import EsClient
+from src.es.reader import V1_INDEX, build_query, read_schema, read_team_alerts
 
 pytestmark = pytest.mark.integration
 

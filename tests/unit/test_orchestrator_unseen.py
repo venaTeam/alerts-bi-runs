@@ -8,11 +8,11 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from src.config import load_config
+from src.run import orchestrator
+from src.run.orchestrator import execute_run
+from src.run.streaming import SchemaAccumulator
 
-from alerts_bi_runs.config import load_config
-from alerts_bi_runs.run import orchestrator
-from alerts_bi_runs.run.orchestrator import execute_run
-from alerts_bi_runs.run.streaming import SchemaAccumulator
 from tests.helpers.rows import v1_row, v2_row
 
 RUN_AT = datetime(2026, 8, 25, 18, 0, 0, tzinfo=UTC)

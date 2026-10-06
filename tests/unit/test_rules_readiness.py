@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import pytest
 from alerts_bi_shared.phase import derive_phase
-
-from alerts_bi_runs.rules.readiness import (
+from src.rules.readiness import (
     evaluate_r8,
     evaluate_r9,
     evaluate_r10,
     is_completion_ready,
     phase2_readiness_pct,
 )
+
 from tests.helpers.rows import v1_row, v2_row
 
 # ------------------------------------------------------------------------- R8

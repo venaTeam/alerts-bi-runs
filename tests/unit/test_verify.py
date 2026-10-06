@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from alerts_bi_runs.run.verify import VerificationResult, _verify_team
+from src.run.verify import VerificationResult, _verify_team
 
 
 def _day(schema: str, snapshot_date: str, **overrides: Any) -> dict[str, Any]:

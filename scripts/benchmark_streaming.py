@@ -26,12 +26,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from alerts_bi_operations.registry import load_registry, select_team
 from alerts_bi_shared.window import build_run_window
+from src.domain.metrics import compute_daily_volume
+from src.domain.normalize import AlertRecord, normalize_row
+from src.rules.engine import attach_row_findings, evaluate_rows
+from src.run.streaming import SchemaAccumulator
+from src.suppression.evaluate import build_r5_findings, evaluate_suppression
 
-from alerts_bi_runs.domain.metrics import compute_daily_volume
-from alerts_bi_runs.domain.normalize import AlertRecord, normalize_row
-from alerts_bi_runs.rules.engine import attach_row_findings, evaluate_rows
-from alerts_bi_runs.run.streaming import SchemaAccumulator
-from alerts_bi_runs.suppression.evaluate import build_r5_findings, evaluate_suppression
 from scripts.generate_mock_alerts import NOW, expand_v1
 
 

@@ -1,8 +1,7 @@
 from pathlib import Path
 
 from alerts_bi_shared.hashing import sha256_text
-
-from alerts_bi_runs.llm.prompt import GUIDE_FILES, build_prompt
+from src.llm.prompt import GUIDE_FILES, build_prompt
 
 ROOT = Path(__file__).resolve().parents[2]
 

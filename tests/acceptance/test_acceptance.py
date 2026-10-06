@@ -13,11 +13,10 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
-from alerts_bi_runs.config import load_config
-from alerts_bi_runs.es.client import EsClient
-from alerts_bi_runs.es.reader import V1_INDEX
-from alerts_bi_runs.run.verify import MANIFEST_PATH, verify_acceptance
+from src.config import load_config
+from src.es.client import EsClient
+from src.es.reader import V1_INDEX
+from src.run.verify import MANIFEST_PATH, verify_acceptance
 
 pytestmark = pytest.mark.acceptance
 

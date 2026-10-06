@@ -1,0 +1,9 @@
+include uv.lock README.md AGENTS.md CLAUDE.md .env.example Dockerfile
+recursive-include docs *.md *.json
+recursive-exclude * __pycache__ *.pyc
+include alembic.ini docker-compose.yml
+recursive-include packages *.py *.json *.toml *.md *.css py.typed
+recursive-include compat *.py
+recursive-include config *.json
+recursive-include scripts *.py *.json
+recursive-include test *.json

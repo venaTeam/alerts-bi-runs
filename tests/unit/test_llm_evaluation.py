@@ -9,10 +9,9 @@ from typing import Any
 import pytest
 from scripts.evaluate_llm import main
 from scripts.generate_mock_alerts import review_documents
-
-from alerts_bi_runs.llm.assess import assess_alerts
-from alerts_bi_runs.llm.evaluation import compare_trials, score_trial, validate_corpus
-from alerts_bi_runs.llm.fake import FakeLlmClient, ScriptedResult, scripted_verdicts
+from src.llm.assess import assess_alerts
+from src.llm.evaluation import compare_trials, score_trial, validate_corpus
+from src.llm.fake import FakeLlmClient, ScriptedResult, scripted_verdicts
 
 ROOT = Path(__file__).resolve().parents[2]
 
