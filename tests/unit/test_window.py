@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from src.domain.window import WINDOW_HOURS, build_run_window, utc_date_key
+from alerts_bi_shared.window import WINDOW_HOURS, build_run_window, utc_date_key
 
 
 def at(text: str) -> datetime:

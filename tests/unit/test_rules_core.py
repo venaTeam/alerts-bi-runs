@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from src.rules.core import (
+
+from alerts_bi_runs.rules.core import (
     evaluate_core_rules,
     evaluate_r1,
     evaluate_r2,
@@ -11,8 +12,7 @@ from src.rules.core import (
     evaluate_r4,
     evaluate_r7,
 )
-from src.rules.text import normalize_field_value, normalize_message
-
+from alerts_bi_runs.rules.text import normalize_field_value, normalize_message
 from tests.helpers.rows import v1_row, v2_row
 
 # ---------------------------------------------------------------- normalization

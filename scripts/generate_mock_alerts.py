@@ -38,8 +38,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.domain.severity import code_for_name
-
+from alerts_bi_runs.domain.severity import code_for_name
 from scripts._jsrandom import Random
 from scripts.acceptance_teams import acceptance_teams
 
@@ -67,7 +66,7 @@ V2_EVALUATION_CADENCE = timedelta(hours=12)
 TWENTY_FOUR_HOURS = timedelta(hours=24)
 
 # The R2 and R3 catalogues are deliberately NOT duplicated here: the authoritative lists
-# live in src/rules/catalogs.py, and fixture defs that need a catalogue value
+# live in alerts_bi_runs/rules/catalogs.py, and fixture defs that need a catalogue value
 # write the literal string.
 RULE1_GENERIC = [
     "Error Occurred",

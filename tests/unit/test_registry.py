@@ -12,7 +12,7 @@ import json
 from typing import Any
 
 import pytest
-from src.registry import (
+from alerts_bi_operations.registry import (
     DEFAULT_REGISTRY_PATH,
     RegistryError,
     load_registry,

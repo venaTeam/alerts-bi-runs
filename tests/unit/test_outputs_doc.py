@@ -9,28 +9,26 @@ They assert coverage and the invariants a reader could get wrong, not prose.
 
 from __future__ import annotations
 
+import inspect
 import re
 from pathlib import Path
 
 import pytest
-from src.report.csv_export import (
+from alerts_bi_operations.report import html
+from alerts_bi_operations.report.csv_export import (
     DAILY_METRIC_HEADERS,
     RULE_COUNT_HEADERS,
     WORKLIST_HEADERS,
 )
-from src.report.render import OUTPUT_FILES
+from alerts_bi_operations.report.render import OUTPUT_FILES
 
-_DOC_PATH = Path(__file__).resolve().parents[2] / "docs" / "outputs.md"
+_DOC_PATH = Path(__file__).resolve().parents[2] / "docs" / "upstream" / "outputs.md"
 DOC = _DOC_PATH.read_bytes().decode("utf-8")
 
 #: Prose wraps, so a sentence the document does state can straddle a line break. Phrases are
 #: matched against this rather than the raw text; column and section names against the raw.
 FLAT = re.sub(r"\s+", " ", DOC)
-HTML_SOURCE = (
-    (Path(__file__).resolve().parents[2] / "src" / "report" / "html.py")
-    .read_bytes()
-    .decode("utf-8")
-)
+HTML_SOURCE = inspect.getsource(html)
 
 EXPORTS = {
     "daily_metrics.csv": DAILY_METRIC_HEADERS,

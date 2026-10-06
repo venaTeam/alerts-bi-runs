@@ -18,18 +18,18 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.config import load_config
-from src.db.connection import connect
-from src.db.llm_audit import SqlLlmJournal
-from src.hashing import compact_json, sha256_of, sha256_text
-from src.llm.assess import assess_alerts
-from src.llm.client import LlmClient
-from src.llm.evaluation import compare_trials, score_trial, validate_corpus
-from src.llm.fake import FakeLlmClient
-from src.llm.openai_client import OpenAiLlmClient
-from src.llm.prompt import build_prompt
-from src.llm.response import response_json_schema
+from alerts_bi_shared.db.connection import connect
+from alerts_bi_shared.hashing import compact_json, sha256_of, sha256_text
 
+from alerts_bi_runs.config import load_config
+from alerts_bi_runs.db.llm_audit import SqlLlmJournal
+from alerts_bi_runs.llm.assess import assess_alerts
+from alerts_bi_runs.llm.client import LlmClient
+from alerts_bi_runs.llm.evaluation import compare_trials, score_trial, validate_corpus
+from alerts_bi_runs.llm.fake import FakeLlmClient
+from alerts_bi_runs.llm.openai_client import OpenAiLlmClient
+from alerts_bi_runs.llm.prompt import build_prompt
+from alerts_bi_runs.llm.response import response_json_schema
 from scripts.generate_mock_alerts import review_documents
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -95,7 +95,7 @@ def main(argv: list[str] | None = None) -> int:
             parser.error("live trials require a configured endpoint and model")
         if manifest["review_state"] != "reviewed" and not args.allow_draft:
             parser.error("draft annotations need review or explicit --allow-draft for exploration")
-    prompt = build_prompt(ROOT)
+    prompt = build_prompt()
     system = (
         args.system_prompt.read_bytes().decode("utf-8")
         if args.system_prompt

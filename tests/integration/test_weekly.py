@@ -8,14 +8,15 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-from src.config import load_config
-from src.db.connection import connect
-from src.db.migrate import reset_test_database
-from src.es.client import EsClient
-from src.es.reader import V1_INDEX
-from src.llm.fake import FakeLlmClient, ScriptedResult
-from src.registry import DEFAULT_REGISTRY_PATH
-from src.weekly.runner import PUBLISHER, WeeklyBusy, run_weekly, schedule_lock
+from alerts_bi_operations.registry import DEFAULT_REGISTRY_PATH
+from alerts_bi_shared.db.connection import connect
+
+from alerts_bi_runs.config import load_config
+from alerts_bi_runs.db.migrate import reset_test_database
+from alerts_bi_runs.es.client import EsClient
+from alerts_bi_runs.es.reader import V1_INDEX
+from alerts_bi_runs.llm.fake import FakeLlmClient, ScriptedResult
+from alerts_bi_runs.weekly.runner import PUBLISHER, WeeklyBusy, run_weekly, schedule_lock
 
 pytestmark = pytest.mark.integration
 
@@ -189,9 +190,10 @@ def test_a_team_that_is_not_enrolled_cannot_be_named(
 def test_history_published_by_hand_off_the_monday_boundary_blocks_the_team(
     fresh: None, registry: str, tmp_path: Path
 ) -> None:
-    from src.db.repositories import persist_run
-    from src.review.publication import publish_run
-    from src.run.orchestrator import execute_run
+    from alerts_bi_operations.review.publication import publish_run
+
+    from alerts_bi_runs.db.repositories import persist_run
+    from alerts_bi_runs.run.orchestrator import execute_run
 
     with connect(CONFIG.sql, DB) as db:
         payload, summary = execute_run(

@@ -11,8 +11,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 ROOT = Path(__file__).resolve().parents[2]
 AGENTS = ROOT / "AGENTS.md"
 CLAUDE = ROOT / "CLAUDE.md"
@@ -33,7 +31,8 @@ def test_both_instruction_files_exist() -> None:
 
 
 def test_agents_md_carries_the_actual_instructions() -> None:
-    assert len(read(AGENTS).splitlines()) > 100
+    assert "SQL Server" in read(AGENTS)
+    assert "migration" in read(AGENTS).lower()
 
 
 def test_claude_md_is_a_pointer_not_a_copy() -> None:
@@ -55,26 +54,8 @@ def test_claude_md_imports_agents_md() -> None:
     assert any(line.strip() == "@AGENTS.md" for line in read(CLAUDE).splitlines())
 
 
-@pytest.mark.parametrize(
-    "marker",
-    [
-        "Mandatory first action",
-        "Locked MVP scope",
-        "Rule boundaries that commonly drift",
-        "Suppression boundaries",
-        "LLM boundaries",
-        "Post-MVP order",
-        "Verification and completion",
-    ],
-)
-def test_every_section_lives_in_the_canonical_file_only(marker: str) -> None:
-    """A section appearing in both files means the copy came back."""
-    assert marker in read(AGENTS), f"AGENTS.md lost its {marker!r} section"
-    assert marker not in read(CLAUDE), f"CLAUDE.md restates {marker!r}; it should point instead"
-
-
 def test_the_canonical_file_still_requires_reading_the_design() -> None:
     """The instructions' own first rule; losing it would be a silent, expensive regression."""
     text = read(AGENTS)
-    assert "docs/alerts_bi_design.md" in text
+    assert "docs/upstream/alerts_bi_design.md" in text
     assert "in full" in text

@@ -6,18 +6,23 @@ from dataclasses import replace
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
-from src.insights.aggregate import biggest, by_application, fire_rows, primary_rule_counts
-from src.insights.estimate import estimate, v1_rule_key
-from src.insights.findings import key_findings
-from src.insights.model import (
+from alerts_bi_shared.catalogs import CORE_RULE_IDS
+from alerts_bi_shared.insights.aggregate import (
+    biggest,
+    by_application,
+    fire_rows,
+    primary_rule_counts,
+)
+from alerts_bi_shared.insights.estimate import estimate, v1_rule_key
+from alerts_bi_shared.insights.findings import key_findings
+from alerts_bi_shared.insights.model import (
     AlertRow,
     RuleTotal,
     SchemaTotals,
     SummaryInputs,
     WeekRules,
 )
-from src.insights.summary import summarize
-from src.rules.catalogs import CORE_RULE_IDS
+from alerts_bi_shared.insights.summary import summarize
 
 T0 = datetime(2026, 9, 7, tzinfo=UTC)
 FORBIDDEN = ("per day", "run_id", "registry", "ruleset", "prompt", "model version")
@@ -516,8 +521,10 @@ def test_unseen_lists_one_schema_only() -> None:
 
 def test_concentration_exactly_at_80_percent() -> None:
     alerts = tuple(alert(key_field=str(i), row_count=c) for i, c in enumerate((40, 40, 10, 10)))
-    src = inputs(alerts=alerts, schemas={"v1": totals("v1", events=100), "v2": totals("v2")})
-    f = next(x for x in key_findings(src) if x.kind == "concentration")
+    alerts_bi_runs = inputs(
+        alerts=alerts, schemas={"v1": totals("v1", events=100), "v2": totals("v2")}
+    )
+    f = next(x for x in key_findings(alerts_bi_runs) if x.kind == "concentration")
     assert f.title == "2 of 4 v1 alerts make 80% of the events"
 
 

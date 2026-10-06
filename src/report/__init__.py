@@ -1,1 +1,0 @@
-"""Alerts BI report package."""

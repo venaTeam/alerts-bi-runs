@@ -10,7 +10,11 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from src.review.publication import PublicationRefused, PublishedWeek, check_publication
+from alerts_bi_operations.review.publication import (
+    PublicationRefused,
+    PublishedWeek,
+    check_publication,
+)
 
 WEEK = timedelta(hours=168)
 END = datetime(2026, 8, 30, 16, 44, 35, tzinfo=UTC)

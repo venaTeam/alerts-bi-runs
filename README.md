@@ -1,4 +1,12 @@
-# Alerts BI
+# Alerts BI runs
+
+This repository owns alert analysis, the run trigger API, weekly scheduling, migrations,
+and the versioned shared Python packages. It was extracted from `venaTeam/alerts-bi`
+commit `c518eeaeb5a3ecb35b5348828300454379e7d535` with its Git history preserved.
+
+The portal and operator app have independent repositories and executables. Canonical
+system specifications live in [alerts-bi-design](https://github.com/venaTeam/alerts-bi-design);
+this repository keeps a pinned snapshot in `docs/upstream/`.
 
 Measures one team's alerting for one week and hands that team a concrete list of what to
 fix.
@@ -11,14 +19,14 @@ result to SQL Server, and renders a scorecard from the stored rows.
 **The tool reports numbers; people draw conclusions.** Every figure in the scorecard is a
 statement about a single week. There is no comparison against a previous run, no trend, no
 baseline and no cross-team leaderboard — by design. The read-only
-[review portal](#the-review-portal) shows each team's published weeks over time, still
+[review portal](https://github.com/venaTeam/alerts-bi-portal) shows each team's published weeks over time, still
 without deltas or conclusions.
 
-[`docs/alerts_bi_design.md`](docs/alerts_bi_design.md) is the canonical specification.
-[`docs/outputs.md`](docs/outputs.md) explains what a run emits, and
-[`docs/openshift-deployment.md`](docs/openshift-deployment.md) covers running it on a cluster.
-[`docs/alerts_bi_flow.md`](docs/alerts_bi_flow.md) describes one run end to end, and
-[`docs/alerts_bi_implementation_plan.md`](docs/alerts_bi_implementation_plan.md) describes
+[`docs/upstream/alerts_bi_design.md`](docs/upstream/alerts_bi_design.md) is the canonical specification.
+[`docs/upstream/outputs.md`](docs/upstream/outputs.md) explains what a run emits, and
+[`docs/upstream/openshift-deployment.md`](docs/upstream/openshift-deployment.md) covers running it on a cluster.
+[`docs/upstream/alerts_bi_flow.md`](docs/upstream/alerts_bi_flow.md) describes one run end to end, and
+[`docs/upstream/alerts_bi_implementation_plan.md`](docs/upstream/alerts_bi_implementation_plan.md) describes
 what to build. Where this README and the design differ, the design wins.
 
 The implementation language is **Python** (design section 7.7). The superseded JavaScript
@@ -40,7 +48,7 @@ Python.
 ## Quick start
 
 ```bash
-uv sync
+uv sync --frozen --all-packages
 ```
 
 ```bash
@@ -69,13 +77,13 @@ RESET=1 uv run python scripts/generate_mock_alerts.py
 ```
 
 ```bash
-uv run alerts-bi db migrate
+uv run alerts-bi-runs db migrate
 ```
 
 Run a team:
 
 ```bash
-uv run alerts-bi run --team checkout-api --run-at 2026-08-25T18:00:00Z --fake-llm
+uv run alerts-bi-runs run --team checkout-api --run-at 2026-08-25T18:00:00Z --fake-llm
 ```
 
 The scorecard and the three CSV exports are written under `out/<run id prefix>/`.
@@ -89,23 +97,19 @@ The scorecard and the three CSV exports are written under `out/<run id prefix>/`
 
 | Command | What it does |
 |---|---|
-| `alerts-bi run --team <id>` | Analyse one team, persist the run, render the report |
-| `alerts-bi report --run-id <id>` | Re-render a stored run without recomputing anything |
-| `alerts-bi report --team <id>` | Re-render that team's most recent completed run |
-| `alerts-bi db migrate` | Create the database if absent and apply pending migrations |
-| `alerts-bi db status` | Show the current revision and whether each migration still matches its checksum |
-| `alerts-bi db reset-test` | Drop and recreate **only** the configured disposable test database |
-| `alerts-bi verify-acceptance` | Compare persisted rows and CSVs against the hand-reviewed manifest |
-| `alerts-bi serve` | Serve the HTTP trigger surface (see below) |
-| `alerts-bi portal` | Serve the read-only review portal (see below) |
-| `alerts-bi publish`, `unpublish`, `publications` | Publish a completed run as a team's weekly review, withdraw one, list them |
-| `alerts-bi decide`, `decisions` | Record and list human decisions on findings |
-| `alerts-bi db grant-reader` | Optional legacy utility to create a restricted login for direct access to portal views |
-| `alerts-bi weekly` | Run and publish every due Monday week of every enrolled team |
-| `alerts-bi weekly-status` | Each enrolled team's latest published week and last schedule outcome |
-| `alerts-bi registry check` | Validate the team registry before deploying an edit |
-| `alerts-bi db setup` | Apply pending migrations; idempotent, for an init container |
-| `alerts-bi admin` | Serve the operator admin app on loopback, behind a login proxy |
+| `alerts-bi-runs run --team <id>` | Analyse one team, persist the run, render the report |
+| `alerts-bi-runs report --run-id <id>` | Re-render a stored run without recomputing anything |
+| `alerts-bi-runs report --team <id>` | Re-render that team's most recent completed run |
+| `alerts-bi-runs db migrate` | Create the database if absent and apply pending migrations |
+| `alerts-bi-runs db status` | Show the current revision and whether each migration still matches its checksum |
+| `alerts-bi-runs db reset-test` | Drop and recreate **only** the configured disposable test database |
+| `alerts-bi-runs verify-acceptance` | Compare persisted rows and CSVs against the hand-reviewed manifest |
+| `alerts-bi-runs serve` | Serve the HTTP trigger surface (see below) |
+| `alerts-bi-runs db grant-reader` | Optional legacy utility to create a restricted login for direct access to portal views |
+| `alerts-bi-runs weekly` | Run and publish every due Monday week of every enrolled team |
+| `alerts-bi-runs weekly-status` | Each enrolled team's latest published week and last schedule outcome |
+| `alerts-bi-runs registry check` | Validate the team registry before deploying an edit |
+| `alerts-bi-runs db setup` | Apply pending migrations; idempotent, for an init container |
 
 ### `run` options
 
@@ -130,7 +134,7 @@ A convenience wrapper around the same pipeline the CLI drives, so a run can be s
 a browser instead of a shell in the repository.
 
 ```bash
-uv run alerts-bi serve
+uv run alerts-bi-runs serve
 ```
 
 Then open <http://127.0.0.1:8000>, pick a team and press Run. The response **is** that run's
@@ -194,7 +198,7 @@ section 7.11). Every team's week is **Monday 00:00 UTC to Monday 00:00 UTC**.
 2. Validate the file:
 
 ```bash
-uv run alerts-bi registry check
+uv run alerts-bi-runs registry check
 ```
 
 3. Deploy it. The next scheduled run reviews the team's most recent completed week and
@@ -203,7 +207,7 @@ uv run alerts-bi registry check
 ### What runs
 
 ```bash
-uv run alerts-bi weekly
+uv run alerts-bi-runs weekly
 ```
 
 Run it as often as you like - on OpenShift a CronJob runs it daily. It only does what is due:
@@ -221,7 +225,7 @@ Run it as often as you like - on OpenShift a CronJob runs it daily. It only does
 It exits non-zero whenever something needs a person. See where every team stands:
 
 ```bash
-uv run alerts-bi weekly-status
+uv run alerts-bi-runs weekly-status
 ```
 
 Resolve a held week by publishing its run yourself after checking it, or skip it by
@@ -229,157 +233,20 @@ publishing the next week with `--allow-gap`. `--dry-run` shows what is due witho
 anything, `--team` narrows to enrolled teams, and `--as-of` fixes "now" for the mock:
 
 ```bash
-uv run alerts-bi weekly --as-of 2026-08-25T18:00:00Z --fake-llm
+uv run alerts-bi-runs weekly --as-of 2026-08-25T18:00:00Z --fake-llm
 ```
 
 ---
 
-## The operator admin app
+## Portal and operator administration
 
-A web screen for the standardization team, so nothing needs a command on a pod (design
-section 7.12). It lists every team with its schedule status, every run with its publication
-state and full scorecard, and a published week's findings. It can publish a run, withdraw a
-week, and record decisions - each recorded under the signed-in person's name.
-
-It has no login of its own: in OpenShift it sits behind the `oauth-proxy` sidecar, which signs
-people in, admits only the standardization team, and passes their name in
-`X-Forwarded-User`. It binds to loopback only, so the proxy is the only way in. It needs
-`ADMIN_SECRET` (32+ characters), which signs its forms.
-
-Locally, without a proxy:
-
-```bash
-ADMIN_SECRET=local-development-secret-0123456789 uv run alerts-bi admin --dev-user yourname
-```
-
-Then open `http://127.0.0.1:8200`. `--dev-user` acts as that name for every request; never
-use it anywhere shared.
-
-### Summary pages
-
-`GET /teams/{team_id}/summary` is the team summary for any completed run, internals included
-(design section 7.14): volume and rule-flagged tiles per schema, model coverage, phase, why
-alerts were flagged, key findings, noisy alerts by application, how often alerts fire, the
-biggest single source, the per-rule table, hidden and `unseen` alerts, migration progress,
-the estimated time to retire v1, and a filterable work list. v1 and v2 are never summed.
-The reader portal shows the same building blocks as a Summary section on the team week page
-for published weeks only, under the portal's rules (weekly totals, no run id or version).
-
----
-
-## The review portal
-
-A separate, **read-only** web surface where anyone on the company network can see every
-team's published weekly reviews, follow them over time, and open individual alerts
-(design section 7.10). It has no login, and it cannot start runs, publish, record decisions
-or change anything.
-
-Four things are kept apart:
-
-| | Who | Visible in the portal |
-|---|---|---|
-| **Run completed** | the pipeline | never - runs are operator-facing |
-| **Review published** | an operator, `alerts-bi publish` | yes; only published weeks exist there |
-| **Machine finding** | the rules and the advisory model | yes, with its stored evidence |
-| **Human decision** | an operator, `alerts-bi decide` | yes, as a history beside the finding |
-
-### Setting it up locally
-
-The portal uses the same `SQL_HOST`, `SQL_PORT`, `SQL_USER`, `SQL_PASSWORD` and
-`SQL_DATABASE` as the pipeline. It queries the `portal_*` views (`portal_reviews`,
-`portal_schema_totals`, `portal_alerts`, `portal_decisions`, `portal_rule_totals` and
-`portal_daily_metrics`). Apply the migrations, through `008`, if the database-owning team
-has not already done so. An existing installation upgrading to the team summary needs
-`005_team_summary` (summary columns and views), `006_r6_episodes` (R6 episode facts),
-`007_portal_daily` (the day-by-day view) and `008` (`basis_changed` compares the team's own
-registry entry, not the whole-file registry version):
-
-```bash
-uv run alerts-bi db migrate
-```
-
-`005_team_summary` uses `STRING_SPLIT`, so the database's compatibility level must be 130
-(SQL Server 2016) or higher. Check it before applying:
-
-```sql
-SELECT compatibility_level FROM sys.databases WHERE name = DB_NAME();
-```
-
-Run a team, then publish that run as its weekly review:
-
-```bash
-uv run alerts-bi run --team notifications-svc --run-at 2026-08-25T18:00:00Z --fake-llm
-```
-
-```bash
-uv run alerts-bi publish --run-id <run id printed above> --note "First review"
-```
-
-Start the portal and open `http://127.0.0.1:8100`:
-
-```bash
-uv run alerts-bi portal
-```
-
-The portal does not inspect the SQL login's permissions at startup. The configured login
-must be able to read the `portal_*` views for pages to load.
-
-### Operator commands
-
-These run with the owning credential (`SQL_USER`) and are the only way to publish or decide.
-
-| Command | What it does |
-|---|---|
-| `alerts-bi publish --run-id <id> [--note ...]` | Publish a completed run as its team's weekly review |
-| `alerts-bi publish ... --replace` | Publish in place of the run already published for exactly that week; the earlier publication is withdrawn, not deleted |
-| `alerts-bi publish ... --allow-gap` | Publish a week that is not adjacent to the team's published weeks |
-| `alerts-bi unpublish --run-id <id> --reason ...` | Withdraw a published week; readers stop seeing it |
-| `alerts-bi publications --team <id>` | List a team's publications, current and withdrawn |
-| `alerts-bi decide --team <id> --week YYYY-MM-DD --schema v1 --application <a> --key-field <k> --finding R1 --state confirmed --note ...` | Append a human decision on one finding |
-| `alerts-bi decisions --team <id>` | List a team's decision history |
-| `alerts-bi db grant-reader` | Optional legacy utility to create a restricted view login; the portal does not use it |
-
-Publishing refuses a week that overlaps a published one, always. Weeks are meant to be back
-to back: run each team with `--run-at` set to the end of its previous published week. A
-decision is recorded against a published week and keyed on the exact alert identity, so it
-never carries over to the new v2 key a team mints by enriching an alert. Decisions are
-append-only; a changed mind is a new decision.
-
-A run that is currently published cannot be re-persisted underneath its readers: `run`
-refuses, and the week has to be withdrawn first.
-
-### What readers see
-
-- A **team directory** with each team's latest published week, listed alphabetically.
-- For each team, a **week picker**, the week's migration phase and readiness, and for v1 and
-  v2 separately the **distinct alerts in the week** and the **alert events in the week**.
-  These are weekly totals, not the scorecard's per-day rate, and v1 and v2 are never added
-  together.
-- A **Summary section** and its presentation slides for the selected week, with a day-by-day
-  chart of distinct and rule-flagged distinct alerts for that one week, labelled "by UTC
-  day" (a within-week view, never a comparison across weeks).
-- **History charts**: one point per published week, one chart per schema and measure. No
-  deltas, percentages or "fixed" labels.
-- A **work list**, paginated, leading with each alert's latest message and a plain-language
-  reason. Opening an alert shows its latest firing, every finding with its stored
-  evidence (an older matching firing is labelled apart from the latest one), advisory model
-  findings with their original reasoning, the decision a person has to make for an
-  uncertain one, v2 readiness gaps in their own section, and the decision history.
-
-It never shows a run id, registry, ruleset, prompt or model version. The scorecard keeps
-those.
-
-### Network exposure
-
-The portal binds to `127.0.0.1:8100` by default (`PORTAL_HOST`, `PORTAL_PORT`). It admits
-only clients on `PORTAL_ALLOWED_NETWORKS` - loopback and the private address ranges by
-default - and answers anyone else with `403`. Behind a reverse proxy the client address is
-the proxy's, so narrow the allowlist to the proxy there. Every page carries a
-Content-Security-Policy that forbids script, framing and inline styles; the pages contain no
-script at all.
-
-Never mount the trigger surface of `alerts-bi serve` on the portal's listener: it is a
-separate application with an unauthenticated write endpoint.
+Install and run [alerts-bi-portal](https://github.com/venaTeam/alerts-bi-portal) and
+[alerts-bi-admin](https://github.com/venaTeam/alerts-bi-admin) from their own repositories.
+Manual publication, withdrawal and finding decisions use `alerts-bi-admin publish`,
+`unpublish`, `publications`, `decide` and `decisions`. The `alerts-bi` compatibility alias
+only exposes this repository's run commands; moved commands explain the new executable.
+All applications use the same SQL database. Only this repository applies migrations.
+The weekly runner continues to publish automatically through the operations library.
 
 ---
 
@@ -397,10 +264,10 @@ Elasticsearch, and nothing is rendered from in-memory pipeline results. Renderin
 separate, retryable step, so a display failure after a successful run loses nothing:
 
 ```bash
-uv run alerts-bi report --run-id <run id>
+uv run alerts-bi-runs report --run-id <run id>
 ```
 
-[`docs/outputs.md`](docs/outputs.md) documents all four: the scorecard section by section,
+[`docs/upstream/outputs.md`](docs/upstream/outputs.md) documents all four: the scorecard section by section,
 every column of every CSV, the API's JSON shapes, and what the outputs deliberately do not
 say. The essentials are below.
 
@@ -441,11 +308,8 @@ never committed.
 | `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL` | On-prem OpenAI-compatible endpoint |
 | `LLM_TIMEOUT_MS` | Per-attempt timeout; a timeout consumes one of the three attempts |
 | `LLM_MAX_BATCH_SIZE` | May lower the 200-alert ceiling, never raise it |
-| `API_HOST`, `API_PORT` | Where `alerts-bi serve` listens; `--host` / `--port` override |
+| `API_HOST`, `API_PORT` | Where `alerts-bi-runs serve` listens; `--host` / `--port` override |
 | `API_REGISTRY_PATH`, `API_DATABASE`, `API_OUT_DIR` | Surface overrides for the registry, target database and report directory |
-| `PORTAL_HOST`, `PORTAL_PORT` | Where `alerts-bi portal` listens; default `127.0.0.1:8100` |
-| `PORTAL_ALLOWED_NETWORKS` | Comma-separated client networks the portal admits; default loopback and private ranges |
-| `PORTAL_PAGE_SIZE` | Work-list page size; the portal reads `SQL_DATABASE` as `SQL_USER` |
 
 For an on-prem cluster with a private CA, set `ES_CA_CERT` to the bundle path; the
 Elasticsearch Python client takes it directly.
@@ -460,7 +324,7 @@ SQL only.
 
 Ownership is **supplied, never inferred**. `config/teams.json` maps each team to its exact
 v1 `operator` values and its v2 `operator`, and is validated in full against
-`config/teams.schema.json` before any Elasticsearch query runs.
+the schema packaged in `alerts_bi_operations/resources/teams.schema.json` before any Elasticsearch query runs.
 
 ```json
 {
@@ -504,7 +368,7 @@ and the mock dataset loaded; they skip with an explanatory message otherwise, ra
 failing.
 
 Integration and acceptance tests use the **disposable** `alerts_bi_test` database, which
-they recreate. `alerts-bi db reset-test` refuses any target that is not the configured test database
+they recreate. `alerts-bi-runs db reset-test` refuses any target that is not the configured test database
 and additionally requires `test` in the name, so a mistyped environment variable cannot
 take out the development store.
 
@@ -543,7 +407,7 @@ count but is not a substitute for acceptance verification or production measurem
 ### Acceptance verification
 
 ```bash
-uv run alerts-bi verify-acceptance
+uv run alerts-bi-runs verify-acceptance
 ```
 
 Runs the six acceptance teams and compares the persisted SQL rows and the rendered CSV
@@ -567,13 +431,13 @@ means here.
 Prompt `1.2.0` added scope-aware evidence guidance and checks for inapplicable citations. It is
 a candidate for live quality evaluation; passing protocol tests does not establish better
 judgment. The current prompt is `1.3.0` (ruleset `1.1.0`), which carries the same guidance
-plus the R6 catalogue line. The [upgrade plan](docs/llm_review_upgrade_plan.md) records release gates and
-[design section 7.13](docs/alerts_bi_design.md#713-llm-review-quality-evaluation-and-durable-audit)
+plus the R6 catalogue line. The [upgrade plan](docs/upstream/llm_review_upgrade_plan.md) records release gates and
+[design section 7.13](docs/upstream/alerts_bi_design.md#713-llm-review-quality-evaluation-and-durable-audit)
 specifies audit/recovery behavior.
 
 Apply migration `004_llm_review_audit` (and the later `005_team_summary`, `006_r6_episodes`,
 `007_portal_daily` and `008`, which changes `portal_reviews.basis_changed` to compare the
-team's own registry entry) through the normal `alerts-bi db migrate` command
+team's own registry entry) through the normal `alerts-bi-runs db migrate` command
 before running the upgraded live pipeline (the deployment init container runs setup).
 It stores requests before calls, preserves successful responses across interrupted runs,
 and records uncertain interrupted attempts against the three-attempt budget. A later explicit
@@ -665,49 +529,28 @@ be approximate.
 
 ## Architecture
 
-```
-src/                     the application package; the import name is `src`
-  cli.py                 command line; a run always names one team
-  versions.py            frozen ruleset / prompt / parser versions
-  config/                environment configuration, split by what it configures
-    env.py                 reading the environment and .env
-    elasticsearch.py       Elasticsearch settings
-    sql.py                 SQL Server settings
-    llm.py                 on-prem model settings, and the 200-alert ceiling
-    app.py                 the pipeline's configuration, composing those three
-    api.py                 the HTTP surface: where it listens, what it writes
-  api/                   HTTP trigger surface over the same pipeline
-    app.py                 application factory and exception handlers
-    routers/               the routes, grouped by what they are for
-    service.py             everything that touches the pipeline, plus the run gate
-    schemas.py             the wire contract; OpenAPI is generated from it
-    dependencies.py        typed access to per-application state
-    negotiation.py         the one rule for HTML versus JSON
-    ui/                    the two pages the surface renders itself
-    server.py              running it under uvicorn
-  registry.py            ownership registry loading and validation
-  es/                    Elasticsearch client and team-scoped reader
-  domain/                run window, schema normalization, metric engine
-  rules/                 R1-R4 and R7 core, R8-R10 readiness, aggregation, phase
-  suppression/           panel SQL lexer, parser, field table, safety guards
-  llm/                   grouping, request factoring, response validation, retry
-  db/                    connection, repositories, and migrations
-    migrations/            Alembic environment; the DDL stays in .sql beside it
-    ledger.py              the checksum ledger Alembic itself does not keep
-  report/                HTML scorecard and the three CSV exports
-  run/                   orchestrator, CLI command handlers, acceptance verification
-scripts/                 mock seeder, scale probe, Kibana setup
-docs/                    design, runtime flow, blueprint, alerting guides, fixture notes
-tests/                   unit, integration and acceptance suites
-test/fixtures/           the hand-authored acceptance oracle
+```text
+src/alerts_bi_runs/          analysis, run API, CLI, scheduling, persistence, migrations
+src/src/db/ledger.py        minimal shim for immutable historical migration imports
+packages/shared/            alerts-bi-shared: SQL config, pure domain/UI building blocks
+packages/operations/        alerts-bi-operations: registry, publication, decisions, reporting
+config/teams.json           runtime registry values (set an explicit path outside this repo)
+scripts/                    mock generation, probes, evaluation and streaming benchmark
+tests/                      runs and shared-package unit/integration/acceptance checks
+test/fixtures/              hand-authored acceptance oracle, unchanged by the extraction
+docs/upstream/              pinned canonical design/contract documentation
 ```
 
-`test/fixtures/` is deliberately not folded into `tests/`: the manifest is a reviewed
-input to the acceptance check, not part of the suite that reads it, and its path is quoted
-in the design and in the manifest's own header.
+`uv sync --frozen --all-packages` installs the workspace packages together. Build releasable
+wheels with `uv build --all-packages`; consumers pin versioned wheels and never import
+this checkout at runtime. The run identifier's application version remains `0.1.0`:
+repository extraction does not change analysis, prompt bytes or stored identities.
+Applied Alembic revision modules and their SQL files are unchanged; the tiny `src` shim
+exists only to preserve their historical imports. New code imports `alerts_bi_runs`.
 
-Each stage is independently testable, and the orchestrator invokes them in the order the
-flow document fixes.
+Both alerting guides ship inside the runs wheel. Default prompt construction uses package
+resources and works from any working directory; guide text and prompt hashes remain pinned.
+Registry values, output directories and optional dotenv input remain operator-supplied.
 
 ### Things worth knowing before changing anything
 

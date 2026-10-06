@@ -5,10 +5,9 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from src.domain.normalize import AlertRecord
-from src.rules.engine import evaluate_rows
-from src.run.orchestrator import _build_finding_row
-
+from alerts_bi_runs.domain.normalize import AlertRecord
+from alerts_bi_runs.rules.engine import evaluate_rows
+from alerts_bi_runs.run.orchestrator import _build_finding_row
 from tests.helpers.rows import v1_row
 
 WINDOW_END = datetime(2026, 8, 25, 0, 0, tzinfo=UTC)

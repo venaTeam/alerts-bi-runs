@@ -3,8 +3,13 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from src.registry import Panel, PanelVariable, load_registry
-from src.suppression.evaluate import (
+from alerts_bi_operations.registry import Panel, PanelVariable, load_registry
+from alerts_bi_operations.suppression.fields import classify_field
+from alerts_bi_operations.suppression.lexer import SqlParseError, tokenize
+from alerts_bi_operations.suppression.parser import collect_leaves, parse_panel_sql
+from alerts_bi_operations.suppression.variables import resolve_variable
+
+from alerts_bi_runs.suppression.evaluate import (
     BLAST_RADIUS_LIMIT,
     LeafOutcome,
     SuppressionResult,
@@ -13,11 +18,6 @@ from src.suppression.evaluate import (
     interpret_panel,
     like_to_regex,
 )
-from src.suppression.fields import classify_field
-from src.suppression.lexer import SqlParseError, tokenize
-from src.suppression.parser import collect_leaves, parse_panel_sql
-from src.suppression.variables import resolve_variable
-
 from tests.helpers.rows import v1_row
 
 

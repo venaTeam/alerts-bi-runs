@@ -5,10 +5,12 @@ from datetime import UTC, datetime
 from typing import Any
 
 import pytest
-from src.db.repositories import verdict_key
-from src.llm.assess import MAX_ATTEMPTS, assess_alerts, mark_all_unassessed
-from src.llm.fake import FakeLlmClient, ScriptedResult, scripted_verdicts
-from src.llm.grouping import (
+from alerts_bi_shared.versions import PROMPT_VERSION as CURRENT_PROMPT_VERSION
+
+from alerts_bi_runs.db.repositories import verdict_key
+from alerts_bi_runs.llm.assess import MAX_ATTEMPTS, assess_alerts, mark_all_unassessed
+from alerts_bi_runs.llm.fake import FakeLlmClient, ScriptedResult, scripted_verdicts
+from alerts_bi_runs.llm.grouping import (
     MAX_BATCH_SIZE,
     alert_transport_id,
     balanced_partition_sizes,
@@ -16,22 +18,20 @@ from src.llm.grouping import (
     build_batches,
     group_alerts,
 )
-from src.llm.prompt import build_prompt
-from src.llm.request import (
+from alerts_bi_runs.llm.prompt import build_prompt
+from alerts_bi_runs.llm.request import (
     assert_lossless,
     build_request,
     reconstruct_document,
     serialize_request,
     shared_field_names,
 )
-from src.llm.response import (
+from alerts_bi_runs.llm.response import (
     LlmResponseError,
     response_json_schema,
     state_for_verdict,
     validate_response,
 )
-from src.versions import PROMPT_VERSION as CURRENT_PROMPT_VERSION
-
 from tests.helpers.rows import v1_row, v2_row
 
 RUN_ID = "run-1"

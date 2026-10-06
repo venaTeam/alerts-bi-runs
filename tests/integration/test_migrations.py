@@ -12,16 +12,17 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
-from src.config import load_config
-from src.db.connection import connect
-from src.db.ledger import (
+from alerts_bi_shared.db.connection import connect
+
+from alerts_bi_runs.config import load_config
+from alerts_bi_runs.db.ledger import (
     MIGRATIONS_DIR,
     MigrationDrift,
     load_migrations,
     read_ledger,
     verify_ledger,
 )
-from src.db.migrate import (
+from alerts_bi_runs.db.migrate import (
     applied_migrations,
     current_revision,
     heads,

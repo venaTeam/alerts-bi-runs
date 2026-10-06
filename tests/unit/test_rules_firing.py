@@ -5,10 +5,9 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from src.domain.normalize import AlertRecord, select_representative
-from src.rules.engine import compute_daily_rule_counts, evaluate_rows
-from src.rules.firing import FiringFacts, firing_facts, is_clear
-
+from alerts_bi_runs.domain.normalize import AlertRecord, select_representative
+from alerts_bi_runs.rules.engine import compute_daily_rule_counts, evaluate_rows
+from alerts_bi_runs.rules.firing import FiringFacts, firing_facts, is_clear
 from tests.helpers.rows import v1_row, v2_row
 
 T0 = datetime(2026, 8, 18, 0, 0, tzinfo=UTC)

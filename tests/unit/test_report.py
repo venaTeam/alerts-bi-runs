@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any
 
 import pytest
-from src.report.csv_export import (
+from alerts_bi_operations.report.csv_export import (
     DAILY_METRIC_HEADERS,
     WORKLIST_HEADERS,
     alert_worklist_csv,
@@ -14,8 +14,8 @@ from src.report.csv_export import (
     rule_counts_csv,
     to_csv,
 )
-from src.report.html import escape_html, render_scorecard, rollup_schema
-from src.report.render import OUTPUT_FILES
+from alerts_bi_operations.report.html import escape_html, render_scorecard, rollup_schema
+from alerts_bi_operations.report.render import OUTPUT_FILES
 
 from tests.helpers.sql import sample_daily, sample_finding, sample_run
 

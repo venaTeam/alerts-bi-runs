@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.domain.normalize import AlertRecord, normalize_row
+from alerts_bi_runs.domain.normalize import AlertRecord, normalize_row
 
 __all__ = ["v1_row", "v2_row"]
 

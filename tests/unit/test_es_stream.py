@@ -8,11 +8,11 @@ from types import SimpleNamespace
 from typing import Any, cast
 
 import pytest
-from src.domain.normalize import AlertRecord
-from src.domain.window import build_run_window
-from src.es.client import ElasticsearchError, EsClient
-from src.es.reader import scan_schema
+from alerts_bi_shared.window import build_run_window
 
+from alerts_bi_runs.domain.normalize import AlertRecord
+from alerts_bi_runs.es.client import ElasticsearchError, EsClient
+from alerts_bi_runs.es.reader import scan_schema
 from tests.helpers.rows import v1_row
 
 WINDOW = build_run_window(datetime(2026, 8, 25, 18, tzinfo=UTC))

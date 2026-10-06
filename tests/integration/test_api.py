@@ -19,15 +19,16 @@ from pathlib import Path
 import httpx
 import pytest
 import uvicorn
+from alerts_bi_operations.report.render import OUTPUT_FILES
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from src.api import build_app
-from src.api.service import RunGate
-from src.config import ApiSettings, load_config
-from src.db.migrate import reset_test_database
-from src.es.client import EsClient
-from src.es.reader import V1_INDEX
-from src.report.render import OUTPUT_FILES
+
+from alerts_bi_runs.api import build_app
+from alerts_bi_runs.api.service import RunGate
+from alerts_bi_runs.config import ApiSettings, load_config
+from alerts_bi_runs.db.migrate import reset_test_database
+from alerts_bi_runs.es.client import EsClient
+from alerts_bi_runs.es.reader import V1_INDEX
 
 pytestmark = pytest.mark.integration
 

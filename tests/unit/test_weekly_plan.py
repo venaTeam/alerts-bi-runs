@@ -5,7 +5,8 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from src.weekly.plan import WEEK, is_week_boundary, latest_week_end, plan_weeks
+
+from alerts_bi_runs.weekly.plan import WEEK, is_week_boundary, latest_week_end, plan_weeks
 
 MONDAY = datetime(2026, 8, 24, tzinfo=UTC)
 

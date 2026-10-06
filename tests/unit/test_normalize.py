@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import pytest
-from src.domain.normalize import (
+
+from alerts_bi_runs.domain.normalize import (
     group_by_identity,
     identity_of,
     normalize_row,
     select_representative,
     split_identity,
 )
-
 from tests.helpers.rows import v1_row, v2_row
 
 

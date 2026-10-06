@@ -9,24 +9,24 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from alerts_bi_operations.registry import Panel, load_registry, select_team
+from alerts_bi_shared.window import build_run_window
 from scripts.acceptance_teams import acceptance_teams
 from scripts.generate_mock_alerts import NOW, expand_v1, expand_v2
-from src.domain.metrics import compute_daily_volume
-from src.domain.normalize import AlertRecord, normalize_row
-from src.domain.window import build_run_window
-from src.registry import Panel, load_registry, select_team
-from src.rules.engine import (
+
+from alerts_bi_runs.domain.metrics import compute_daily_volume
+from alerts_bi_runs.domain.normalize import AlertRecord, normalize_row
+from alerts_bi_runs.rules.engine import (
     attach_row_findings,
     compute_daily_flagged,
     compute_daily_rule_counts,
     evaluate_rows,
 )
-from src.rules.firing import firing_facts
-from src.rules.firing_stream import FiringAccumulator
-from src.run.orchestrator import _build_finding_row
-from src.run.streaming import SchemaAccumulator
-from src.suppression.evaluate import build_r5_findings, evaluate_suppression
-
+from alerts_bi_runs.rules.firing import firing_facts
+from alerts_bi_runs.rules.firing_stream import FiringAccumulator
+from alerts_bi_runs.run.orchestrator import _build_finding_row
+from alerts_bi_runs.run.streaming import SchemaAccumulator
+from alerts_bi_runs.suppression.evaluate import build_r5_findings, evaluate_suppression
 from tests.helpers.rows import v1_row, v2_row
 
 WINDOW = build_run_window(NOW)
@@ -153,8 +153,9 @@ def test_out_of_order_input_is_rejected() -> None:
 def test_only_final_representative_needs_a_hash_without_timestamp_ties(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    from src.hashing import sha256_of
-    from src.run import streaming
+    from alerts_bi_shared.hashing import sha256_of
+
+    from alerts_bi_runs.run import streaming
 
     calls = 0
 

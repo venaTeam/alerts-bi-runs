@@ -6,6 +6,13 @@ resolution-markers = [
     "python_full_version < '3.15'",
 ]
 
+[manifest]
+members = [
+    "alerts-bi-operations",
+    "alerts-bi-runs",
+    "alerts-bi-shared",
+]
+
 [[package]]
 name = "alembic"
 version = "1.19.1"
@@ -21,11 +28,28 @@ wheels = [
 ]
 
 [[package]]
-name = "alerts-bi"
+name = "alerts-bi-operations"
+version = "0.1.0"
+source = { editable = "packages/operations" }
+dependencies = [
+    { name = "alerts-bi-shared" },
+    { name = "jsonschema" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "alerts-bi-shared", editable = "packages/shared" },
+    { name = "jsonschema", specifier = ">=4.23,<5" },
+]
+
+[[package]]
+name = "alerts-bi-runs"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "alembic" },
+    { name = "alerts-bi-operations" },
+    { name = "alerts-bi-shared" },
     { name = "elasticsearch" },
     { name = "fastapi" },
     { name = "jsonschema" },
@@ -47,6 +71,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "alembic", specifier = ">=1.14,<2" },
+    { name = "alerts-bi-operations", editable = "packages/operations" },
+    { name = "alerts-bi-shared", editable = "packages/shared" },
     { name = "elasticsearch", specifier = ">=8.15,<9" },
     { name = "fastapi", specifier = ">=0.115,<1" },
     { name = "jsonschema", specifier = ">=4.23,<5" },
@@ -63,6 +89,21 @@ dev = [
     { name = "pytest", specifier = ">=8.3,<9" },
     { name = "ruff", specifier = ">=0.8,<0.13" },
     { name = "types-jsonschema", specifier = ">=4.23" },
+]
+
+[[package]]
+name = "alerts-bi-shared"
+version = "0.1.0"
+source = { editable = "packages/shared" }
+dependencies = [
+    { name = "pymssql" },
+    { name = "sqlalchemy" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pymssql", specifier = ">=2.3,<3" },
+    { name = "sqlalchemy", specifier = ">=2.0,<3" },
 ]
 
 [[package]]

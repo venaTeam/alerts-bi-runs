@@ -3,10 +3,11 @@ from __future__ import annotations
 from collections.abc import Sequence
 from datetime import UTC, datetime
 
-from src.domain.normalize import AlertRecord, identity_of
-from src.domain.window import build_run_window
-from src.rules.core import Finding
-from src.rules.engine import (
+from alerts_bi_shared.window import build_run_window
+
+from alerts_bi_runs.domain.normalize import AlertRecord, identity_of
+from alerts_bi_runs.rules.core import Finding
+from alerts_bi_runs.rules.engine import (
     Evaluation,
     attach_row_findings,
     compare_rule_ids,
@@ -14,10 +15,9 @@ from src.rules.engine import (
     compute_daily_rule_counts,
     count_phase2_gap_identities,
 )
-from src.rules.engine import (
+from alerts_bi_runs.rules.engine import (
     evaluate_rows as _evaluate_rows,
 )
-
 from tests.helpers.rows import v1_row, v2_row
 
 # Close to the rows, so a single open Grafana row is never R6 'stuck' as a side effect.
