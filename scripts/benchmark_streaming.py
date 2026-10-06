@@ -36,7 +36,8 @@ from scripts.generate_mock_alerts import NOW, expand_v1
 
 
 def peak_memory_mib() -> float:
-    if platform.system() == "Windows":
+    # Mypy recognizes this guard and checks the ctypes APIs only on Windows.
+    if sys.platform == "win32":
         import ctypes
         from ctypes import wintypes
 
@@ -65,11 +66,12 @@ def peak_memory_mib() -> float:
         if not read(process(), ctypes.byref(counters), counters.cb):
             raise ctypes.WinError()
         return float(counters.PeakWorkingSetSize) / 2**20
-    # resource is Unix-only; load dynamically so Windows type checks remain portable.
-    resource = import_module("resource")
+    else:
+        # resource is Unix-only; load dynamically so Windows type checks remain portable.
+        resource = import_module("resource")
 
-    scale = 2**20 if platform.system() == "Darwin" else 1024
-    return float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) / scale
+        scale = 2**20 if platform.system() == "Darwin" else 1024
+        return float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) / scale
 
 
 def main() -> None:
