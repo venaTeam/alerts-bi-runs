@@ -1,3 +1,7 @@
+# Historical Alerts BI runs repository
+
+> Retired development home: use [alerts-bi-admin](https://github.com/venaTeam/alerts-bi-admin). Read [RETIREMENT.md](RETIREMENT.md) before operating or changing this checkout. The original README below is historical and its commands are not the supported deployment path.
+
 # Alerts BI runs
 
 This repository owns alert analysis, the run trigger API, weekly scheduling, migrations,
