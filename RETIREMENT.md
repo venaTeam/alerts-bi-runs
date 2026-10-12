@@ -12,6 +12,9 @@ This repository preserves historical source and release provenance. Do not creat
 features, migrations, library releases or deployments here. The replacement PRs must be merged
 and deployed, consumers transferred, and a scheduled cycle verified before archival.
 
+The unit/build CI workflow is now owned by admin. Its replacement checks the application,
+engine and library source together; this repository no longer runs the old producer build.
+
 See admin's pinned `docs/upstream/runs-retirement.md` for exact cutover and rollback steps.
 Do not run two schedulers, downgrade/reset SQL, or delete historical releases. Archival needs
 explicit authorization after the agreed rollback period. This PR does not stop existing services.
